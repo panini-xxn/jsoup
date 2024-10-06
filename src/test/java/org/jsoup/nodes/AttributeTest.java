@@ -15,6 +15,15 @@ public class AttributeTest {
         assertEquals(attr.html(), attr.toString());
     }
 
+    @Test public void testCreateAttributeFromEncoded() {
+        String key = "a_key";
+        String value = "a_value";
+
+        Attribute attribute = Attribute.createFromEncoded(key, value);
+        assertEquals(key, attribute.getKey());
+        assertEquals(value, attribute.getValue());
+    }
+
     @Test public void testWithSupplementaryCharacterInAttributeKeyAndValue() {
         String s = new String(Character.toChars(135361));
         Attribute attr = new Attribute(s, "A" + s + "B");

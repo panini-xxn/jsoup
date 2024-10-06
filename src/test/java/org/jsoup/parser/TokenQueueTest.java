@@ -12,6 +12,18 @@ import static org.junit.jupiter.api.Assertions.*;
  * Token queue tests.
  */
 public class TokenQueueTest {
+    @Test public void testConsumeSequence() {
+        try {
+            TokenQueue tq = new TokenQueue("ab");
+            tq.consume("ab");
+            assertTrue(tq.isEmpty());
+            tq.consume("cd");
+            fail("Should have thrown IllegalStateException");
+        } catch (IllegalStateException expected) {
+            assertEquals("Queue did not match expected sequence", expected.getMessage());
+        }
+    }
+
     @Test public void chompBalanced() {
         TokenQueue tq = new TokenQueue(":contains(one (two) three) four");
         String pre = tq.consumeTo("(");
