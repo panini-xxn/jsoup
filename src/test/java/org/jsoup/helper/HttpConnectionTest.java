@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.junit.jupiter.api.Assertions;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class HttpConnectionTest {
@@ -433,5 +435,21 @@ public class HttpConnectionTest {
         assertNotNull(creds);
         assertEquals("foo", creds.getUserName());
         assertEquals("bar", new String(creds.getPassword()));
+    }
+
+    @Test
+    public void testMap() throws NoSuchFieldException {
+        HttpConnection connection = new HttpConnection();
+        Map<String, String> dataMap = new HashMap<>();
+        dataMap.put("key1", "value1");
+        dataMap.put("key2", "value2");
+
+        connection.data(dataMap);
+
+        HttpConnection connectionTwo = new HttpConnection();
+
+        assertThrows(ValidationException.class, () -> {
+            connectionTwo.data((Map<String, String>) null);
+        });
     }
 }
