@@ -7,10 +7,7 @@ import org.jsoup.integration.ParseTest;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.net.Authenticator;
-import java.net.MalformedURLException;
-import java.net.PasswordAuthentication;
-import java.net.URL;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -88,6 +85,16 @@ public class HttpConnectionTest {
         res.header("ACCEPT-ENCODING", "deflate");
         assertEquals("deflate", res.header("Accept-Encoding"));
         assertEquals("deflate", res.header("accept-Encoding"));
+    }
+
+    @Test public void getHeaders(){
+        Connection.Request req = new HttpConnection.Request();
+        req.addHeader("A", "B");
+        req.addHeader("C", "D");
+
+        Map<String, String> headers = req.headers();
+        assertEquals("B", headers.get("A"));
+        assertEquals("D", headers.get("C"));
     }
 
     @Test public void headers() {
@@ -236,6 +243,25 @@ public class HttpConnectionTest {
         Connection con = HttpConnection.connect("http://example.com/");
         con.cookie("Name", "Val");
         assertEquals("Val", con.request().cookie("Name"));
+    }
+
+    @Test public void cookieStore() {
+        Connection con = HttpConnection.connect("http://example.com/");
+        CookieManager cookieManager = new CookieManager();
+        CookieStore cookieStore = cookieManager.getCookieStore();
+
+        con.cookieStore(cookieStore);
+        URI uri = URI.create("https://example.com/");
+        HttpCookie cookie = new HttpCookie("Name", "Val");
+
+        cookieStore.add(uri, cookie);
+        assertEquals("Val", con.cookieStore().get(uri).get(0).getValue());
+    }
+
+    @Test public void postDataCharset() {
+        Connection con = HttpConnection.connect("http://example.com/");
+        con.postDataCharset("UTF-16");
+        assertEquals("UTF-16", con.request().postDataCharset());
     }
 
     @Test public void inputStream() {
