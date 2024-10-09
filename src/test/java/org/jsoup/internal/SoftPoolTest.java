@@ -136,4 +136,67 @@ public class SoftPoolTest {
         Stack<char[]> stack = softLocalPool.getStack();
         assertTrue(stack.size() <= SoftPool.MaxIdle, "Pool size exceeded MaxIdle limit");
     }
+
+    @Test
+    public void testReadIndexOut() throws IOException {
+        byte[] dest = new byte[5];
+        InputStream inputStream = new ByteArrayInputStream(new byte[0]);
+        SimpleBufferedInput simpleBufferedInput = new SimpleBufferedInput(inputStream);
+
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            simpleBufferedInput.read(dest, -1, 3);
+        });
+
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            simpleBufferedInput.read(dest, -1, 99);
+        });
+
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            simpleBufferedInput.read(dest, 3, -1);
+        });
+
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            simpleBufferedInput.read(dest, -1, -1);
+        });
+
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            simpleBufferedInput.read(dest, 3, 99);
+        });
+
+        assertEquals(0, simpleBufferedInput.read(dest, 3, 0));
+        assertEquals(0, simpleBufferedInput.read(dest, 0, 0));
+    }
+
+    @Test
+    public void testRead() throws IOException {
+        byte[] thing = new byte[] {1, 2, 3, 4, 5};
+        byte[] emptyThing = new byte[0];
+        SimpleBufferedInput simpleBufferedInput = new SimpleBufferedInput(new ByteArrayInputStream(thing));
+        SimpleBufferedInput emptySimpleBufferedInput = new SimpleBufferedInput(new ByteArrayInputStream(emptyThing));
+
+        assertEquals(1, simpleBufferedInput.read());
+        simpleBufferedInput.mark(5); // Set mark after first byte
+        assertEquals(2, simpleBufferedInput.read()); // Read second byte (2)
+
+        assertEquals(-1, emptySimpleBufferedInput.read());
+    }
+
+    @Test
+    public void testReadLimit(){
+        InputStream inputStream = new ByteArrayInputStream(new byte[0]);
+        SimpleBufferedInput simpleBufferedInput = new SimpleBufferedInput(inputStream);
+
+        int readLim = SimpleBufferedInput.BufferSize + 1;
+        assertThrows(IllegalArgumentException.class, () ->{
+            simpleBufferedInput.mark(readLim);
+        });
+    }
+
+    @Test
+    public void testReset(){
+        InputStream inputStream = new ByteArrayInputStream(new byte[0]);
+        SimpleBufferedInput simpleBufferedInput = new SimpleBufferedInput(inputStream);
+
+        assertThrows(IOException.class, simpleBufferedInput::reset);
+    }
 }
