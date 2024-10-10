@@ -140,6 +140,12 @@ public class SoftPoolTest {
         assertTrue(stack.size() <= SoftPool.MaxIdle, "Pool size exceeded MaxIdle limit");
     }
 
+    /*
+    La méthode testReadIndexOut() teste sur la méthode read(byte[] dest, int offset, int desiredLen). Le test vérifie 
+    si, pour les cas où offset < 0 || desiredLen < 0 || desiredLen > dest.length - offset, la méthode renvoie une 
+    Index out of bound exception. Si desiredLen == 0, la méthode doit renvoyer 0.
+    */
+    
     @Test
     public void testReadIndexOut() throws IOException {
         byte[] dest = new byte[5];
@@ -170,6 +176,11 @@ public class SoftPoolTest {
         assertEquals(0, simpleBufferedInput.read(dest, 0, 0));
     }
 
+    /*
+    La méthode testRead teste la méthode read(). Le test vérifie la lecture des input streams. 
+    Si Input est vide, le test renvoie -1. Les autres lignes vérifient la lecture des bytes et
+    renvoie le progres de la lecture.
+    */
     @Test
     public void testRead() throws IOException {
         byte[] thing = new byte[] {1, 2, 3, 4, 5};
@@ -184,6 +195,10 @@ public class SoftPoolTest {
         assertEquals(-1, emptySimpleBufferedInput.read());
     }
 
+    /*
+    La méthode testReadLimit() teste la méthode mark(int readlimit), spécifiquement le cas où la limite de 
+    lecture dépasse la taille du buffer. Ici, le test vérifie que la méthode renvoie une Illegal argument exception.
+    */
     @Test
     public void testReadLimit(){
         InputStream inputStream = new ByteArrayInputStream(new byte[0]);
@@ -194,6 +209,10 @@ public class SoftPoolTest {
             simpleBufferedInput.mark(readLim);
         });
     }
+
+    /*
+    La méthode testReset() teste la méthode reset() et vérifie si la méthode lance une IO exception si bufMark < 0.
+    */
 
     @Test
     public void testReset(){
