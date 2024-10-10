@@ -437,6 +437,12 @@ public class HttpConnectionTest {
         assertEquals("bar", new String(creds.getPassword()));
     }
 
+    /*
+    La méthode testMap teste la méthode public Connection data(Map<String, String> data) sur la vérification des maps null,
+    ainsi que le stockage des données dans un map. Le testMap prévoit qu'un map null causera unn ValidationException et qu'un
+    map valide ne causera aucune exception.
+    */
+    
     @Test
     public void testMap() throws NoSuchFieldException {
         HttpConnection connection = new HttpConnection();
