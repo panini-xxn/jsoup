@@ -89,6 +89,9 @@ public class HttpConnectionTest {
         assertEquals("deflate", res.header("accept-Encoding"));
     }
 
+    // Ce test vérifie que la méthode pour obtenir les headers d'une requête HTTP
+    // fonctionne bien. Pour faire cela, on ajoute deux nouveaux header et on tests
+    // si .headers() contient les nouveau headers
     @Test public void getHeaders(){
         Connection.Request req = new HttpConnection.Request();
         req.addHeader("A", "B");
@@ -247,6 +250,10 @@ public class HttpConnectionTest {
         assertEquals("Val", con.request().cookie("Name"));
     }
 
+    // Ce test unitaire test si la fonction pour accéder au cookieStore d'une requête fonctionne bien.
+    // Pour faire cela, on instancie un CookieManager inclut dans la librarie de Java, on ajoute un
+    // cookie dans le cookie manager et on test si Connection.cookieStore() contient
+    // le nouveau cookie.
     @Test public void cookieStore() {
         Connection con = HttpConnection.connect("http://example.com/");
         CookieManager cookieManager = new CookieManager();
@@ -260,6 +267,8 @@ public class HttpConnectionTest {
         assertEquals("Val", con.cookieStore().get(uri).get(0).getValue());
     }
 
+    // Ce test unitaire test si postDataCharset() retourne correctement le jeu de donnée
+    // définit dans la requête
     @Test public void postDataCharset() {
         Connection con = HttpConnection.connect("http://example.com/");
         con.postDataCharset("UTF-16");

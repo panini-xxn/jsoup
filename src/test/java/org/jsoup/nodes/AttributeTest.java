@@ -15,6 +15,8 @@ public class AttributeTest {
         assertEquals(attr.html(), attr.toString());
     }
 
+    // Ce test unitaire test la création d'une instance Attribute à partir d'une clé et valeur.
+    // i.e. .createFromEncoded(key, value)
     @Test public void testCreateAttributeFromEncoded() {
         String key = "a_key";
         String value = "a_value";

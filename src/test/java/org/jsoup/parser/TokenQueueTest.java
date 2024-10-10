@@ -12,6 +12,9 @@ import static org.junit.jupiter.api.Assertions.*;
  * Token queue tests.
  */
 public class TokenQueueTest {
+    // Ce test unitaire à comme utilité de tester la consommation (pop) d'une queue de token.
+    // C'est-à-dire si la consommation d'une séquence l'enlève de la queue, et si la queue est vide,
+    // doit retourner une erreur.
     @Test public void testConsumeSequence() {
         try {
             TokenQueue tq = new TokenQueue("ab");
