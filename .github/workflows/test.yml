@@ -10,10 +10,8 @@ jobs:
     strategy:
       matrix:
         jvm_flags: [
-          "-XX:+UseG1GC",
           "-XX:+UseParallelGC",
           "-XX:+ShowCodeDetailsInExceptionMessages",
-          "-XX:+HeapDumpOnOutOfMemoryError",
           "-XX:+PrintCompilation",
           "-XX:+TieredCompilation",
           "-XX:ThreadStackSize=1024"
