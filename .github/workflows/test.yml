@@ -40,7 +40,7 @@ jobs:
       - name: Fail if coverage has not improved
         run: |
           coverage=$COVERAGE
-          threshold=81.58
+          threshold=90.41
           if (( $(echo "$coverage - $threshold <= 0.1" | bc -l) )); then
             echo "Coverage has not improved."
             exit 1
