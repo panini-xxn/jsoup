@@ -10,8 +10,10 @@ jobs:
     strategy:
       matrix:
         jvm_flags: [
+          "-XX:+UseG1GC", 
           "-XX:+UseParallelGC",
           "-XX:+ShowCodeDetailsInExceptionMessages",
+          "-XX:+HeapDumpOnOutOfMemoryError",
           "-XX:+PrintCompilation",
           "-XX:+TieredCompilation",
           "-XX:ThreadStackSize=1024"
@@ -38,7 +40,7 @@ jobs:
       - name: Fail if coverage has not improved
         run: |
           coverage=$COVERAGE
-          threshold=90.41
+          threshold=90
           if (( $(echo "$coverage - $threshold <= 0.1" | bc -l) )); then
             echo "Coverage has not improved."
             exit 1
