@@ -1,48 +1,50 @@
-name: Test
+name: Tests
+
 on:
-  push:
   pull_request:
+  push:
 
 jobs:
-  test:
-    runs-on: ${{ matrix.os }}
+  build:
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ubuntu-latest]
-        # choosing to run a reduced set of LTS, current, and next, to balance coverage and execution time
-        java: [17]
-      fail-fast: false
-    name: Test JDK ${{ matrix.java }}, ${{ matrix.os }}
+        jvm_flags: [
+          "-XX:+UseG1GC", 
+          "-XX:+UseParallelGC",
+          "-XX:+ShowCodeDetailsInExceptionMessages",
+          "-XX:+HeapDumpOnOutOfMemoryError",
+          "-XX:+PrintCompilation",
+          "-XX:+TieredCompilation",
+          "-XX:ThreadStackSize=1024"
+        ]
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up JDK ${{ matrix.java }}
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: ${{ matrix.java }}
-          distribution: 'zulu'
-          cache: 'maven'
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
 
-      - name: Maven Compile
-        run: mvn -X compile -B --file pom.xml
+      - name: Run Maven tests with ${{ matrix.jvm_flags }}
+        run: mvn verify -DargLine="@{argLine} ${{ matrix.jvm_flags }}"
 
-      - name: Maven Verify
-        run: mvn -X verify -B --file pom.xml
-
-      - name: Get JaCoCo Coverage
-        id: coverage  
+      - name: Get JaCoCo Coverage with ${{ matrix.jvm_flags }}
+        id: coverage
         run: |
-          coverage=$(python3 config/coverage.py target/site/jacoco/jacoco.csv) 
+          coverage=$(python3 config/coverage.py target/site/jacoco/jacoco.csv)
           echo "COVERAGE=$coverage" >> $GITHUB_ENV
 
-      - name: Fail if coverage has not improved.
+      - name: Fail if coverage has not improved
         run: |
           coverage=$COVERAGE
-          threshold=90.41
+          threshold=90
           if (( $(echo "$coverage - $threshold <= 0.1" | bc -l) )); then
             echo "Coverage has not improved."
             exit 1
           else
             echo "New coverage: $coverage%"
           fi
+    
